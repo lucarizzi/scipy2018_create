@@ -1,10 +1,10 @@
 """Test the `met` module."""
 
-from hugs.calc import get_wind_dir, get_wind_speed
+from hugs.calc import get_wind_dir, get_wind_speed, get_wind_components
 
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
-
+import pytest
 
 def test_speed():
     """Test calculating wind speed."""
@@ -35,3 +35,23 @@ def test_dir():
     true_dir = np.array([270., 225., 180., 270.])
 
     assert_array_almost_equal(true_dir, direc, 4)
+
+
+def test_get_wind_components_scalar():
+    """Test calculating wind components."""
+    true_u = 1.7101007
+    true_v = 4.698463103929543
+
+    dir = 200
+    speed = 5
+
+    u,v = get_wind_components(speed, dir)
+
+    assert_almost_equal(u, true_u)
+    assert_almost_equal(v, true_v)
+
+def test_warning_direction():
+    """Tests that warning is raised when warning direction is > 360."""
+    with pytest.warns(UserWarning):
+        get_wind_components(3,361)
+        
